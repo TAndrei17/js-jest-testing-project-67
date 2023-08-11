@@ -1,5 +1,5 @@
 import { test, expect } from '@jest/globals';
-import createFileName from '../src/get_name.js';
+import createFileName from '../src/create_name.js';
 
 test('create file name', () => {
   expect(createFileName('https://ru.hexlet.io/courses')).toEqual('ru-hexlet-io-courses.html');
