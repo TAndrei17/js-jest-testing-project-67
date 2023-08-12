@@ -1,12 +1,14 @@
 import fs from 'fs/promises';
 
 const createFileHtml = async (path, context) => {
-  await fs.writeFile(path, context, (error) => {
-    if (error) {
-      throw error('Error');
-    }
-    console.log('The file has been saved!');
-  });
+  try {
+    await fs.writeFile(path, context);
+    console.log(path);
+    return { filepath: path };
+  } catch (error) {
+    console.error('Failed to save the file. Perhaps the directory does not exist');
+    return error;
+  }
 };
 
 export default createFileHtml;
