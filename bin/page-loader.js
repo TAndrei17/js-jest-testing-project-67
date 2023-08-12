@@ -1,4 +1,5 @@
 #!/usr/bin/env babel-node
+
 import path from 'path';
 import { fileURLToPath } from 'url';
 import axios from 'axios';
