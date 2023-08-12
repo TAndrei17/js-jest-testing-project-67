@@ -2,7 +2,10 @@ install:
 	npm ci
 
 publish:
-	npm publish --dry-run
+	npm publish --dry-runl
+
+page-loader:
+	babel-node bin/page-loader.js
 
 lint:
 	npx eslint .
