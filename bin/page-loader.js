@@ -1,9 +1,37 @@
 #!/usr/bin/env babel-node
+import path from 'path';
+import { fileURLToPath } from 'url';
+import axios from 'axios';
+import { program } from 'commander';
 
-// import axios from 'axios';
+import getHtml from '../src/get_html.js';
+import createFileName from '../src/create_name.js';
+import createFileHtml from '../src/create_file.js';
 
-// получить html
-// создать путь к файлу, записать файл по этому пути
-// если пользователь указал другой путь, предусмотреть его
+const __filename = fileURLToPath(import.meta.url);
+// '__dirname' is current module (bin/page-loader.js)
+const __dirname = path.dirname(__filename);
+const projectRoot = path.resolve(__dirname, '..');
+const createPath = (filename, directory = '') => path.join(projectRoot, directory, filename);
 
-// const getHtml = (url, client) => {};
+const pageLoader = async (url, directory) => {
+  const fileName = createFileName(url);
+  const filepath = createPath(fileName, directory);
+  const context = await getHtml(url, axios);
+  await createFileHtml(filepath, context);
+  console.log({ filepath });
+  return { filepath };
+};
+
+program
+  .name('Page Loader')
+  .description('Get HTML from URL and save to file')
+  .version('1.0.0')
+  .option('-o, --output <directory>', 'Output directory path')
+  .arguments('<url>')
+  .action((url, option) => {
+    pageLoader(url, option.output);
+  })
+  .parse(process.argv);
+
+export default pageLoader;
