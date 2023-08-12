@@ -18,9 +18,8 @@ const pageLoader = async (url, directory) => {
   const fileName = createFileName(url);
   const filepath = createPath(fileName, directory);
   const context = await getHtml(url, axios);
-  await createFileHtml(filepath, context);
-  console.log({ filepath });
-  return { filepath };
+  const result = await createFileHtml(filepath, context);
+  return result;
 };
 
 program
