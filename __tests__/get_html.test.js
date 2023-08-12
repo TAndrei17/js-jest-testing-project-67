@@ -1,3 +1,7 @@
+import nock from 'nock';
+import axios from 'axios';
+import { expect } from '@jest/globals';
+
 import AxiosFakeClient from '../classes/AxiosFakeClient.js';
 import getHtml from '../src/get_html.js';
 
@@ -16,9 +20,19 @@ const exampleHtml = `<!DOCTYPE html>
     </body>
   </html>`;
 
-test('get HTML', async () => {
+test('get HTML 1', async () => {
   const client = new AxiosFakeClient({ 'https://fakeUrl/fortesting': exampleHtml });
   const fakeUrl = 'https://fakeUrl/fortesting';
   const html = await getHtml(fakeUrl, client);
   expect(html).toEqual(exampleHtml);
+});
+
+nock.disableNetConnect();
+test('get HTML 2', async () => {
+  const scope = nock('https://ru.hexlet.io')
+    .get('/courses')
+    .reply(200);
+
+  await getHtml('https://ru.hexlet.io/courses', axios);
+  expect(scope.isDone()).toBe(true);
 });
