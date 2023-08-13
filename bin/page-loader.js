@@ -16,7 +16,7 @@ const projectRoot = path.resolve(__dirname, '..');
 const createPath = (filename, directory = '') => path.join(projectRoot, directory, filename);
 
 const pageLoader = async (url, directory) => {
-  const fileName = createFileName(url);
+  const fileName = createFileName(url, 'html');
   const filepath = createPath(fileName, directory);
   const context = await getHtml(url, axios);
   const result = await createFileHtml(filepath, context);
