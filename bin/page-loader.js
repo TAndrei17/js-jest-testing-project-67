@@ -1,4 +1,4 @@
-#!/usr/bin/env babel-node
+#!/usr/bin/env node
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -26,8 +26,8 @@ const pageLoader = async (url, directory) => {
 program
   .name('Page Loader')
   .description('Get HTML from URL and save to file')
-  .version('1.0.0')
-  .option('-o, --output <directory>', 'Output directory path')
+  .version('1.0.0', '-v, --version', 'output the version number')
+  .option('-o, --output <directory>', 'output directory path')
   .arguments('<url>')
   .action((url, option) => {
     pageLoader(url, option.output);
