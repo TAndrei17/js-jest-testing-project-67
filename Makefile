@@ -5,7 +5,7 @@ publish:
 	npm publish --dry-runl
 
 page-loader:
-	babel-node bin/page-loader.js
+	node bin/page-loader.js
 
 lint:
 	npx eslint .
