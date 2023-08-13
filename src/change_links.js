@@ -1,7 +1,7 @@
 // import * as cheerio from 'cheerio';
 
-const changeImgLimks = async (html) => {
+const changeImgLinks = async (/* html */) => {
 
 };
 
-export default changeImgLimks;
+export default changeImgLinks;

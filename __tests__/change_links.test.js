@@ -2,7 +2,7 @@ import { fileURLToPath } from 'url';
 import os from 'os';
 import path from 'path';
 import fs from 'fs/promises';
-import changeImgLimks from '../src/change_links.js';
+import changeImgLinks from '../src/change_links.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,7 +15,7 @@ beforeEach(async () => {
 });
 
 test('changeHTML', async () => {
-  await changeImgLimks(tmpFilePath); // функция меняет файл, не нужно сохранять в константу!
+  await changeImgLinks(tmpFilePath); // функция меняет файл, не нужно сохранять в константу!
   const result = await fs.readFile(tmpFilePath, 'utf-8');
   const controlHTML = await fs.readFile(createPath('after.html'), 'utf-8');
   expect(result).toEqual(controlHTML);
