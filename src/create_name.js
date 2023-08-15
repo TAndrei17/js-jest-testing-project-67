@@ -1,6 +1,8 @@
-const endPath = {
+const mapping = {
   html: () => '.html',
   files: () => '_files',
+  jpg: () => '.jpg',
+  jpeg: () => '.jpeg',
 };
 
 const createName = (url, ending) => {
@@ -9,7 +11,7 @@ const createName = (url, ending) => {
   }
   const getName = url.split('//');
   const changeSymbols = getName[1].replace(/[^a-zA-Z0-9]/g, '-');
-  return `${changeSymbols}${endPath[ending]()}`;
+  return `${changeSymbols}${mapping[ending]()}`;
 };
 
 export default createName;
