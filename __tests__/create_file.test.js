@@ -2,7 +2,7 @@ import os from 'os';
 import path from 'path';
 import fs from 'fs/promises';
 import { existsSync, readFileSync } from 'fs';
-import { beforeEach } from '@jest/globals';
+import { beforeEach, expect } from '@jest/globals';
 import _ from 'lodash';
 
 import createFileHtml from '../src/create_file.js';
@@ -23,6 +23,7 @@ const exampleHtml = `<!DOCTYPE html>
   </html>`;
 
 const tmpFilePath = path.join(os.tmpdir(), 'tmp.html');
+const unknownDir = '/unknown/directoty';
 
 // delete virtual file before every test;
 beforeEach(async () => {
@@ -39,4 +40,11 @@ test('write file', async () => {
   // fs.readFileSync - other module
   const checkContent = readFileSync(tmpFilePath, 'utf-8');
   expect(checkContent).toBe(exampleHtml);
+});
+
+test('wrong path', async () => {
+  await createFileHtml(unknownDir, exampleHtml);
+  // fs.existsSync - other module
+  const fileNoExists = existsSync(unknownDir);
+  expect(fileNoExists).toBe(false);
 });
