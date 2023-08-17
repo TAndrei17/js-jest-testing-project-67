@@ -2,14 +2,15 @@
 /* eslint-disable consistent-return */
 
 import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs';
+import { URL, fileURLToPath } from 'url';
+import fs, { readFileSync } from 'fs';
 import axios from 'axios';
 import { program } from 'commander';
 
 import getHtml from '../src/get_html.js';
 import createName from '../src/create_name.js';
 import createFileHtml from '../src/create_file.js';
+import getLinksImagines from '../src/get_links_imagines.js';
 import saveImagine from '../src/save_imagine.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,15 +22,21 @@ const createPath = (filename, directory = '') => path.join(projectRoot, director
 const saveHtml = async (url, directory) => {
   const fileName = createName(url, 'html');
   const filepath = createPath(fileName, directory);
-  const context = await getHtml(url, axios);
+  const context = await getHtml(url.href, axios);
   const result = await createFileHtml(filepath, context);
+  // creates html file in directory and returns { filepath };
   return result;
 };
 
 const pageLoader = async (url, directory) => {
-  const html = saveHtml(url, directory);
+  // get HTML from URL
+  const myURL = new URL(url);
+  const html = await saveHtml(myURL, directory);
+  const { filepath } = html;
+  const htmlText = readFileSync(filepath, 'utf-8');
 
-  const dirImaginesName = createName(url, 'files');
+  // create directory for to save assets
+  const dirImaginesName = createName(myURL, 'files');
   const dirImaginesPath = path.join(projectRoot, dirImaginesName);
   await fs.mkdir(dirImaginesPath, (err) => {
     if (err) {
@@ -37,8 +44,16 @@ const pageLoader = async (url, directory) => {
     }
     console.log('Directory created successfully!');
   });
-  const imaginePath = path.join(dirImaginesPath, 'image.jpeg');
-  await saveImagine(url, axios, imaginePath);
+
+  // get array of urls-imagines, save imagines to directory
+  const urlsImagines = getLinksImagines(htmlText, url);
+  urlsImagines.forEach(async (urlImagine) => {
+    const urlObj = new URL(urlImagine);
+    const imaginePath = path.join(dirImaginesPath, createName(urlObj));
+    await saveImagine(urlObj, axios, imaginePath);
+  });
+
+  // html is { filepath }, not file.html;
   return html;
 };
 
