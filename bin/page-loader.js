@@ -3,7 +3,7 @@
 
 import path from 'path';
 import { URL, fileURLToPath } from 'url';
-import fs, { readFileSync } from 'fs';
+import fs from 'fs';
 import axios from 'axios';
 import { program } from 'commander';
 
@@ -33,7 +33,7 @@ const pageLoader = async (url, directory) => {
   const myURL = new URL(url);
   const html = await saveHtml(myURL, directory);
   const { filepath } = html;
-  const htmlText = readFileSync(filepath, 'utf-8');
+  // const htmlText = readFileSync(filepath, 'utf-8');
 
   // create directory for to save assets
   const dirImaginesName = createName(myURL, 'files');
@@ -45,10 +45,14 @@ const pageLoader = async (url, directory) => {
     console.log('Directory created successfully!');
   });
 
-  // get array of urls-imagines, save imagines to directory
-  const urlsImagines = getLinksImagines(htmlText, url);
+  // get array of urls-imagines for axios-client
+  // change html file
+  const urlsImagines = await getLinksImagines(filepath, url, dirImaginesPath);
+
+  // save imagines to directory
   urlsImagines.forEach(async (urlImagine) => {
     const urlObj = new URL(urlImagine);
+    // path to directory including image.extension
     const imaginePath = path.join(dirImaginesPath, createName(urlObj));
     await saveImagine(urlObj, axios, imaginePath);
   });
