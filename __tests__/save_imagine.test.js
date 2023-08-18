@@ -31,4 +31,5 @@ test('get imagine', async () => {
 
   expect(scope.isDone()).toBe(true);
   expect(fileExists).toBe(true);
+  // нужен тест, чтобы сравнить содержание
 });
