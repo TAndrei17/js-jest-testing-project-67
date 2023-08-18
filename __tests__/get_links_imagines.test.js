@@ -1,43 +1,47 @@
+import { fileURLToPath } from 'url';
+import os from 'os';
+import path from 'path';
+import fs from 'fs/promises';
+// import _ from 'lodash';
+
 import getLinksImagines from '../src/get_links_imagines.js';
 
-const exampleHtml1 = (
-  `<html lang="ru">
-    <head>
-      <meta charset="utf-8">
-      <title>Курсы по программированию Хекслет</title>
-    </head>
-    <body>
-      <img src="assets/professions/nodejs.png" alt="Иконка профессии Node.js-программист" />
-      <img src="assets1/professions1/nodejs.png" alt="Иконка профессии Node.js-программист" />
-      <h3>
-        <a href="/professions/nodejs">Node.js-программист</a>
-      </h3>
-    </body>
-  </html>`
-);
+// 'get links of imagines'
+const url = 'https://ru.hexlet.io/courses';
 
-const exampleHtml2 = (
-  `<html lang="ru">
-    <head>
-      <meta charset="utf-8">
-      <title>Курсы по программированию Хекслет</title>
-    </head>
-    <body>
-      <h3>
-        <a href="/professions/nodejs">Node.js-программист</a>
-      </h3>
-    </body>
-  </html>`
-);
+// changeHTML
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const page = 'https://ru.hexlet.io/courses';
+const createPath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+const tmpDirPath = path.join(os.tmpdir(), 'before.html');
+const tmpDirPath2 = path.join(os.tmpdir(), 'before_no_img.html');
+
+beforeEach(async () => {
+  await fs.copyFile(createPath('before.html'), tmpDirPath);
+  await fs.copyFile(createPath('before_no_img.html'), tmpDirPath2);
+});
+
+test('changeHTML', async () => {
+  await getLinksImagines(tmpDirPath, url, 'tmp');
+  const updatedHtml = await fs.readFile(tmpDirPath, 'utf-8');
+  // Cheerio can disrupt indentation and encoding after modifying an HTML file
+  const result = updatedHtml.replace(/\s+/g, '');
+  const controlHTML = await fs.readFile(createPath('after.html'), 'utf-8');
+  // Cheerio can disrupt indentation and encoding after modifying an HTML file
+  const controlResult = controlHTML.replace(/\s+/g, '');
+  expect(result).toEqual(controlResult);
+});
 
 test('get links of imagines', async () => {
-  const linkImagine = getLinksImagines(exampleHtml1, page);
-  const noLinkImagine = getLinksImagines(exampleHtml2, page);
+  const linkImagine = await getLinksImagines(tmpDirPath, url, 'tmp');
   expect(linkImagine).toEqual([
     'https://ru.hexlet.io/courses/assets/professions/nodejs.png',
     'https://ru.hexlet.io/courses/assets1/professions1/nodejs.png',
   ]);
+});
+
+test('no links of imagines', async () => {
+  const noLinkImagine = await getLinksImagines(tmpDirPath2, url, 'tmp');
   expect(noLinkImagine).toEqual([]);
 });
