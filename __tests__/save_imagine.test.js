@@ -24,12 +24,11 @@ nock.disableNetConnect();
 test('get imagine', async () => {
   const scope = nock('https://github.com')
     .get('/TAndrei17/cv_Andrei_Trunkin/Avatar_AT.jpeg')
-    .reply(200, tmpFilePath, { 'Content-Type': 'image/jpeg' });
+    .replyWithFile(200, tmpFilePath, { 'Content-Type': 'image/jpeg' });
 
   await saveImagine(url, axios, tmpFilePath);
-  const fileExists = fs.existsSync(tmpFilePath);
+  const fileExists = await fs.existsSync(tmpFilePath);
 
   expect(scope.isDone()).toBe(true);
   expect(fileExists).toBe(true);
-  // нужен тест, чтобы сравнить содержание
 });
