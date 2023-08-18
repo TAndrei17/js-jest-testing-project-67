@@ -10,7 +10,9 @@ import createName from '../src/create_name.js';
 const urlLink = 'https://github.com/TAndrei17/cv_Andrei_Trunkin/Avatar_AT.jpeg';
 const url = new URL(urlLink);
 const fileName = createName(url);
-const tmpFilePath = path.join(os.tmpdir(), fileName);
+const tmpFilePath = process.env.GITHUB_ACTIONS_TMP_PATH
+  ? path.join(process.env.GITHUB_ACTIONS_TMP_PATH, fileName)
+  : path.join(os.tmpdir(), fileName);
 
 nock.disableNetConnect();
 test('Check the request', async () => {
