@@ -1,11 +1,9 @@
 import fs from 'fs';
 
-const saveImagine = async (url, client, directory = '') => {
+const saveImagine = async (url, client, directory) => {
   const { href } = url;
   const { data } = await client.get(href, { responseType: 'stream' });
-  if (directory !== '') {
-    data.pipe(fs.createWriteStream(directory));
-  }
+  data.pipe(fs.createWriteStream(directory));
 };
 
 export default saveImagine;
