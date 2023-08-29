@@ -10,8 +10,8 @@ import { program } from 'commander';
 import getHtml from '../src/get_html.js';
 import createName from '../src/create_name.js';
 import createFileHtml from '../src/create_file.js';
-import getLinksImagines from '../src/get_links_imagines.js';
-import saveImagine from '../src/save_imagine.js';
+import updateLinksResources from '../src/update_links_resources.js';
+import saveAssets from '../src/save_assets.js';
 
 const __filename = fileURLToPath(import.meta.url);
 // '__dirname' is current module (bin/page-loader.js)
@@ -36,25 +36,25 @@ const pageLoader = async (url, directory) => {
   // const htmlText = readFileSync(filepath, 'utf-8');
 
   // create directory for to save assets
-  const dirImaginesName = createName(myURL, 'files');
-  const dirImaginesPath = path.join(projectRoot, dirImaginesName);
-  await fs.mkdir(dirImaginesPath, (err) => {
+  const dirAssetsName = createName(myURL, 'files');
+  const dirAssetsPath = path.join(projectRoot, dirAssetsName);
+  await fs.mkdir(dirAssetsPath, (err) => {
     if (err) {
       return console.error(err);
     }
-    console.log('Directory created successfully!');
+    console.log(`\nDirectory for assets is successfully created!\nPath is "${dirAssetsPath}"\n`);
   });
 
   // get array of urls-imagines for axios-client
-  // change html file
-  const urlsImagines = await getLinksImagines(filepath, url, dirImaginesPath);
+  // change html file and save it in filepath
+  const urlsAssets = await updateLinksResources(filepath, url, dirAssetsPath);
 
-  // save imagines to directory
-  urlsImagines.forEach(async (urlImagine) => {
-    const urlObj = new URL(urlImagine);
-    // path to directory including image.extension
-    const imaginePath = path.join(dirImaginesPath, createName(urlObj));
-    await saveImagine(urlObj, axios, imaginePath);
+  // save assets to directory
+  urlsAssets.forEach(async (urlAsset) => {
+    const urlObj = new URL(urlAsset);
+    // path to directory including asset.extension
+    const assetPath = path.join(dirAssetsPath, createName(urlObj));
+    await saveAssets(urlObj, axios, assetPath);
   });
 
   // html is { filepath }, not file.html;
