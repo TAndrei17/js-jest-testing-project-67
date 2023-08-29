@@ -31,7 +31,6 @@ const createName = (url, ending = '') => {
     changePathname = mapping.pathname.replace(/[^a-zA-Z0-9]/g, '-');
     return `${changeHostname}${changePathname}-${mapping.filename}`;
   }
-
   return `${changeHostname}${changePathname}${mapping[ending]()}`;
 };
 
