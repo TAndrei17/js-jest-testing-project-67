@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs/promises';
 // import _ from 'lodash';
 
-import getLinksImagines from '../src/get_links_imagines.js';
+import updateLinksResources from '../src/update_links_resources.js';
 
 // 'get links of imagines'
 const url = 'https://ru.hexlet.io/courses';
@@ -23,7 +23,7 @@ beforeEach(async () => {
 });
 
 test('changeHTML', async () => {
-  await getLinksImagines(tmpDirPath, url, 'tmp');
+  await updateLinksResources(tmpDirPath, url, 'tmp');
   const updatedHtml = await fs.readFile(tmpDirPath, 'utf-8');
   // Cheerio can disrupt indentation and encoding after modifying an HTML file
   const result = updatedHtml.replace(/\s+/g, '');
@@ -33,15 +33,17 @@ test('changeHTML', async () => {
   expect(result).toEqual(controlResult);
 });
 
-test('get links of imagines', async () => {
-  const linkImagine = await getLinksImagines(tmpDirPath, url, 'tmp');
-  expect(linkImagine).toEqual([
+test('get links of assets', async () => {
+  const linkAssets = await updateLinksResources(tmpDirPath, url, 'tmp');
+  expect(linkAssets).toEqual([
+    'https://ru.hexlet.io/courses/assets/application.css',
+    'https://ru.hexlet.io/courses',
     'https://ru.hexlet.io/courses/assets/professions/nodejs.png',
-    'https://ru.hexlet.io/courses/assets1/professions1/nodejs.png',
+    'https://ru.hexlet.io/packs/js/runtime.js',
   ]);
 });
 
 test('no links of imagines', async () => {
-  const noLinkImagine = await getLinksImagines(tmpDirPath2, url, 'tmp');
+  const noLinkImagine = await updateLinksResources(tmpDirPath2, url, 'tmp');
   expect(noLinkImagine).toEqual([]);
 });

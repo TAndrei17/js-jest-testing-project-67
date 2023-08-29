@@ -5,7 +5,7 @@ import { URL, fileURLToPath } from 'url';
 import nock from 'nock';
 import axios from 'axios';
 
-import saveImagine from '../src/save_imagine.js';
+import saveImagine from '../src/save_assets.js';
 import createName from '../src/create_name.js';
 
 const urlLink = 'http://www.huvila.net/650/kuvax-9909-650-S-0_iso.jpg';
